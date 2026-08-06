@@ -1,0 +1,21 @@
+# ---------- 敏感信息：绝不提交 ----------
+.env
+.env.*
+!.env.example
+
+# ---------- AgentKit 本地状态（含沙箱 endpoint/token，勿提交）----------
+.agentkit/
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# ---------- Node ----------
+node_modules/
+
+# ---------- 系统/编辑器 ----------
+.DS_Store
+*.log
