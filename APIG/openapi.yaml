@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: 影腾摄像头管理 API
+  version: 1.1.0
+  description: 供 AgentKit HTTP 转 MCP 使用的监控摄像头存量系统 API，后端已部署至 VKE 并通过 APIG 对外提供服务。
+servers:
+  - url: https://scnmblp2s7ph3h8mvvspf.apigateway-cn-beijing.volceapi.com
+security:
+  - ApiKeyAuth: []
+paths:
+  /api/cameras:
+    get:
+      operationId: list_cameras
+      summary: 查询摄像头列表
+      description: 按状态或关键词查询摄像头，用于定位设备和发现离线设备。
+      parameters:
+        - {name: status, in: query, required: false, schema: {type: string, enum: [online, degraded, offline]}}
+        - {name: search, in: query, required: false, schema: {type: string}}
+      responses:
+        '200': {description: 摄像头列表, content: {application/json: {schema: {$ref: '#/components/schemas/CameraList'}}}}
+  /api/cameras/{camera_id}:
+    get:
+      operationId: get_camera
+      summary: 查询单个摄像头详情
+      parameters:
+        - {$ref: '#/components/parameters/CameraId'}
+      responses:
+        '200': {description: 摄像头详情, content: {application/json: {schema: {$ref: '#/components/schemas/Camera'}}}}
+        '404': {description: 摄像头不存在}
+  /api/cameras/{camera_id}/diagnostics:
+    get:
+      operationId: diagnose_camera
+      summary: 诊断摄像头运行状态
+      description: 返回供电、网络、丢包、延迟、存储、温度和画面状态，以及诊断结论与处置建议。
+      parameters:
+        - {$ref: '#/components/parameters/CameraId'}
+      responses:
+        '200': {description: 诊断结果, content: {application/json: {schema: {$ref: '#/components/schemas/Diagnostics'}}}}
+  /api/alerts:
+    get:
+      operationId: list_camera_alerts
+      summary: 查询摄像头告警
+      parameters:
+        - {name: camera_id, in: query, required: false, schema: {type: string}, description: 不传则返回所有告警}
+      responses:
+        '200': {description: 告警列表}
+  /api/cameras/{camera_id}/maintenance-status:
+    patch:
+      operationId: update_camera_maintenance_status
+      summary: 更新摄像头检修状态
+      description: 这是写操作。仅在用户明确确认后，将设备标记为待检修、检修中或已完成。
+      parameters:
+        - {$ref: '#/components/parameters/CameraId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: {type: string, enum: [normal, pending, in_progress, completed]}
+                reason: {type: string}
+      responses:
+        '200': {description: 更新成功}
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: 存量业务 API 的访问密钥；由 MCP 出站凭据托管并注入。
+  parameters:
+    CameraId:
+      name: camera_id
+      in: path
+      required: true
+      schema: {type: string, example: CAM-003}
+  schemas:
+    Camera:
+      type: object
+      required: [id, name, site, status]
+      properties:
+        id: {type: string}
+        name: {type: string}
+        site: {type: string}
+        zone: {type: string}
+        model: {type: string}
+        status: {type: string, enum: [online, degraded, offline]}
+        maintenance_status: {type: string, enum: [normal, pending, in_progress, completed]}
+        health: {type: integer}
+    CameraList:
+      type: object
+      properties:
+        items: {type: array, items: {$ref: '#/components/schemas/Camera'}}
+        total: {type: integer}
+    Diagnostics:
+      type: object
+      properties:
+        camera_id: {type: string}
+        camera_name: {type: string}
+        power: {type: string}
+        network: {type: string}
+        packet_loss: {type: number}
+        latency_ms: {type: number, nullable: true}
+        storage: {type: string}
+        temperature_c: {type: number, nullable: true}
+        image: {type: string}
+        summary: {type: string}
+        recommendations: {type: array, items: {type: string}}

@@ -1,0 +1,23 @@
+# 机密与本地配置，绝不进镜像（运行期由 VKE Deployment/Secret 注入）
+.env
+.env.*
+agentkit.yaml
+.agentkit/
+
+# 无关目录与构建产物
+camera-agent-runtime/
+docs/
+deploy/
+scripts/
+build/
+tests/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# 版本控制与元数据
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+README.md

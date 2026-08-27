@@ -1,0 +1,3 @@
+# Web 控制台后端（server.py）主要依赖 Python 标准库。
+# certifi 提供受信任 CA 根证书包，供后端以 HTTPS 调用 Agent Runtime 时校验证书。
+certifi

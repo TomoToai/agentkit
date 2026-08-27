@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agentkit-camera-demo
+  labels:
+    app.kubernetes.io/part-of: yingteng-camera-demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yingteng-camera-web
+  namespace: agentkit-camera-demo
+  labels:
+    app.kubernetes.io/name: yingteng-camera-web
+    app.kubernetes.io/part-of: yingteng-camera-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: yingteng-camera-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: yingteng-camera-web
+        app.kubernetes.io/part-of: yingteng-camera-demo
+    spec:
+      imagePullSecrets:
+        - name: yingteng-camera-pull
+      containers:
+        - name: web
+          image: limengtao-cr-demo-cn-beijing.cr.volces.com/limengtao_agentkit/yingteng-camera-web:20260824-1605
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: CAMERA_HOST
+              value: 0.0.0.0
+            - name: CAMERA_PORT
+              value: "8000"
+            # Agent Runtime 调用地址与调用 Key（后端持有，浏览器不接触）。
+            # 真实值仅存在于集群 Deployment；此处占位，勿提交明文。
+            - name: AGENT_RUNTIME_URL
+              value: https://s4erjj70ad5nbo374vhu6.apigateway-cn-beijing.volceapi.com/invoke
+            # AGENT_RUNTIME_API_KEY 由集群侧直接注入，不写入本清单。
+            - name: BUSINESS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: yingteng-camera-business-api-key
+                  key: BUSINESS_API_KEY
+            # 控制台登录态（浏览器前门鉴权）：账号 PBKDF2 哈希 + 会话签名密钥。
+            - name: CONSOLE_USERS
+              valueFrom:
+                secretKeyRef:
+                  name: yingteng-camera-console
+                  key: CONSOLE_USERS
+            - name: CONSOLE_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: yingteng-camera-console
+                  key: CONSOLE_SESSION_SECRET
+            # 「记住我」登录态有效期（秒）。可选，缺省 30 天；调小即缩短免登录时长。
+            - name: CONSOLE_REMEMBER_TTL_SECONDS
+              value: "2592000"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yingteng-camera-web
+  namespace: agentkit-camera-demo
+  labels:
+    app.kubernetes.io/name: yingteng-camera-web
+    app.kubernetes.io/part-of: yingteng-camera-demo
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: yingteng-camera-web
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http

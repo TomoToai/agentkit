@@ -1,0 +1,118 @@
+# 自动生成：请勿手工编辑。
+# 来源：APIG/server.py；命令：python3 scripts/generate_openapi_from_source.py
+
+openapi: "3.0.3"
+info:
+  title: "影腾摄像头管理 API（源码自动生成）"
+  version: "1.0.0"
+  description: "由 server.py 路由扫描生成；仅包含可安全转换为 MCP 工具的存量业务 API。"
+servers:
+  - url: "https://scnmblp2s7ph3h8mvvspf.apigateway-cn-beijing.volceapi.com"
+security:
+  - ApiKeyAuth: []
+paths:
+  /api/cameras:
+    get:
+      operationId: "list_cameras"
+      summary: "查询摄像头列表"
+      description: "按状态或关键词定位设备和发现离线设备。"
+      parameters:
+        - name: "status"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            enum:
+              - "online"
+              - "degraded"
+              - "offline"
+        - name: "search"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "摄像头列表"
+  /api/cameras/{camera_id}:
+    get:
+      operationId: "get_camera"
+      summary: "查询单个摄像头详情"
+      parameters:
+        - $ref: "#/components/parameters/CameraId"
+      responses:
+        "200":
+          description: "摄像头详情"
+        "404":
+          description: "摄像头不存在"
+  /api/cameras/{camera_id}/diagnostics:
+    get:
+      operationId: "diagnose_camera"
+      summary: "获取摄像头诊断指标"
+      description: "返回供电、网络、丢包、延迟、存储、温度和画面状态。"
+      parameters:
+        - $ref: "#/components/parameters/CameraId"
+      responses:
+        "200":
+          description: "诊断结果"
+        "404":
+          description: "摄像头不存在"
+  /api/alerts:
+    get:
+      operationId: "list_camera_alerts"
+      summary: "查询摄像头近期告警"
+      parameters:
+        - name: "camera_id"
+          in: "query"
+          required: false
+          description: "不传则返回所有告警"
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "告警列表"
+  /api/cameras/{camera_id}/maintenance-status:
+    patch:
+      operationId: "update_camera_maintenance_status"
+      summary: "更新摄像头检修状态"
+      description: "写操作；仅在用户明确确认后执行。"
+      parameters:
+        - $ref: "#/components/parameters/CameraId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "status"
+              properties:
+                status:
+                  type: "string"
+                  enum:
+                    - "normal"
+                    - "pending"
+                    - "in_progress"
+                    - "completed"
+                reason:
+                  type: "string"
+      responses:
+        "200":
+          description: "更新成功"
+        "404":
+          description: "摄像头不存在"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: "apiKey"
+      in: "header"
+      name: "X-API-Key"
+      description: "存量业务 API 的访问密钥；由 MCP 出站凭据托管并注入。"
+  parameters:
+    CameraId:
+      name: "camera_id"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
+        example: "CAM-003"

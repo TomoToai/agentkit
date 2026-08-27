@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登录 · 影腾视界摄像头运营中心</title>
+  <style>
+    :root{--bg:#0f172a;--panel:#1e293b;--line:#334155;--muted:#94a3b8;--text:#e2e8f0;--brand:#3b82f6}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"PingFang SC",sans-serif;background:radial-gradient(1200px 600px at 70% -10%,#1e3a8a33,transparent),var(--bg);color:var(--text);display:flex;min-height:100vh;align-items:center;justify-content:center}
+    .card{background:var(--panel);padding:36px 32px;border-radius:16px;width:340px;box-shadow:0 24px 70px rgba(0,0,0,.45);border:1px solid #ffffff0d}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+    .brand .mark{display:inline-flex;width:38px;height:38px;border-radius:10px;background:var(--brand);align-items:center;justify-content:center;font-weight:700;font-size:18px}
+    .brand small{color:var(--muted)}
+    h1{font-size:20px;margin:0 0 4px}
+    p.sub{margin:0 0 22px;color:var(--muted);font-size:13px}
+    label{display:block;font-size:13px;margin:14px 0 6px;color:#cbd5e1}
+    input{width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#0f172a;color:var(--text);font-size:14px;outline:none}
+    input:focus{border-color:var(--brand)}
+    .remember{display:flex;align-items:center;gap:8px;margin:18px 0 0;font-size:13px;color:#cbd5e1;cursor:pointer;user-select:none}
+    .remember input{width:auto;margin:0;accent-color:var(--brand)}
+    button{width:100%;margin-top:20px;padding:12px;border:0;border-radius:9px;background:var(--brand);color:#fff;font-size:15px;cursor:pointer;font-weight:600}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .err{margin-top:14px;color:#f87171;font-size:13px;min-height:16px}
+    .foot{margin-top:18px;color:#64748b;font-size:12px;text-align:center}
+  </style>
+</head>
+<body>
+  <form class="card" id="login-form">
+    <div class="brand"><span class="mark">影</span><div><b>影腾视界</b><br><small>Camera Operations</small></div></div>
+    <h1>控制台登录</h1>
+    <p class="sub">请输入账号与密码以访问摄像头运营中心</p>
+    <label for="username">账号</label>
+    <input id="username" name="username" autocomplete="username" autofocus />
+    <label for="password">密码</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" />
+    <label class="remember"><input type="checkbox" id="remember" name="remember" /> 记住我（30 天内免登录）</label>
+    <button id="submit" type="submit">登录</button>
+    <div class="err" id="error"></div>
+    <p class="foot">授权访问 · 登录态由服务端签名会话维护</p>
+  </form>
+  <script>
+    const form = document.getElementById('login-form');
+    const btn = document.getElementById('submit');
+    const err = document.getElementById('error');
+    const userInput = document.getElementById('username');
+    const remember = document.getElementById('remember');
+    // 预填上次登录的账号并默认勾选「记住我」；仅保存用户名，绝不保存密码。
+    try {
+      const savedUser = localStorage.getItem('camera_console_user');
+      if (savedUser) {
+        userInput.value = savedUser;
+        remember.checked = true;
+        document.getElementById('password').focus();
+      }
+    } catch (_) {}
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      err.textContent = '';
+      btn.disabled = true; btn.textContent = '登录中…';
+      try {
+        const r = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: userInput.value,
+            password: document.getElementById('password').value,
+            remember: remember.checked,
+          }),
+        });
+        const d = await r.json();
+        if (r.ok) {
+          // 记住账号供下次预填；取消勾选则清除，避免共用设备残留。
+          try {
+            if (remember.checked) { localStorage.setItem('camera_console_user', userInput.value); }
+            else { localStorage.removeItem('camera_console_user'); }
+          } catch (_) {}
+          location.href = '/';
+        }
+        else { err.textContent = d.error?.message || '登录失败'; }
+      } catch (_) {
+        err.textContent = '网络异常，请重试';
+      } finally {
+        btn.disabled = false; btn.textContent = '登录';
+      }
+    };
+  </script>
+</body>
+</html>

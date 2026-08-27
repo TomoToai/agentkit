@@ -1,0 +1,3 @@
+AgentKit Sandbox file transfer test
+resource_prefix=lmt-
+session_id=lmt-code-session

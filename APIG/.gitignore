@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+build/
+# 新版 CLI 的 agentkit.yaml 直接内联 runtime_envs（含调用密钥），
+# 不做 ${VAR} 展开，因此含明文密钥，禁止提交。
+agentkit.yaml
+Dockerfile

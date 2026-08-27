@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>影腾视界 · 摄像头运营中心</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/monitor.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">影</span><div><b>影腾视界</b><small>Camera Operations</small></div></div>
+      <nav>
+        <button class="nav-item active" data-view="overview"><span>⌂</span>运营总览</button>
+        <button class="nav-item" data-view="cameras"><span>◉</span>摄像头</button>
+        <button class="nav-item" data-view="alerts"><span>△</span>告警中心</button>
+        <button class="nav-item" data-view="audit"><span>↗</span>API 审计</button>
+      </nav>
+      <div class="sidebar-footer"><span class="pulse"></span><div><b>服务运行正常</b><small>上海一号园区</small></div></div>
+    </aside>
+    <main>
+      <header><div><p class="eyebrow">2026 年 8 月 12 日 · 实时态势</p><h1 id="page-title">运营总览</h1></div><div class="header-actions"><button class="ghost" id="refresh">刷新数据</button><button class="agent-button" id="open-agent"><span>✦</span> AI 诊断助手</button><button class="ghost" id="logout">退出登录</button></div></header>
+      <div id="content"></div>
+    </main>
+  </div>
+  <aside class="agent-panel" id="agent-panel" aria-hidden="true">
+    <div class="agent-head"><div><span class="agent-orb">✦</span><div><b>摄像头诊断助手</b><small><i></i> AgentKit Gateway 已连接</small></div></div><div class="agent-head-actions"><button id="clear-chat" title="清空对话并开启新会话">新对话</button><button id="close-agent" title="关闭">×</button></div></div>
+    <div class="chat" id="chat"><div class="message assistant"><span>✦</span><div>你好，我可以查询摄像头状态、分析告警并给出排障建议。<div class="suggestions"><button>园区西门为什么没有画面？</button><button>查看所有离线摄像头</button></div></div></div></div>
+    <form id="chat-form"><input id="chat-input" placeholder="询问设备状态或故障原因…" autocomplete="off"/><button>↑</button></form>
+    <p class="agent-note">Demo 模式 · 回答基于模拟设备数据</p>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

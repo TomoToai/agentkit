@@ -1,0 +1,20 @@
+.camera-preview {
+  background-color: #24332d !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+.camera-preview::before {
+  background: linear-gradient(180deg, #06140b70 0%, transparent 45%, #06140b38 70%, #06140b9c 100%) !important;
+  opacity: 1 !important;
+}
+.camera-preview::after { display: none !important; }
+.camera-preview-large { height: 320px !important; }
+.camera-live,.camera-id,.camera-scene { position: absolute; z-index: 1; color: #fff; font-size: 9px; letter-spacing: .08em; }
+.camera-live { top: 10px; left: 10px; padding: 4px 6px; border-radius: 4px; background: #18794ecc; }
+.camera-live::before { content: ""; display: inline-block; width: 5px; height: 5px; margin: 0 4px 1px 0; border-radius: 50%; background: #9cf0bd; box-shadow: 0 0 7px #9cf0bd; }
+.camera-live.camera-offline { background: #9b3030d9; }
+.camera-live.camera-offline::before { background: #ffd0d0; box-shadow: 0 0 7px #ffd0d0; }
+.camera-id { top: 11px; right: 10px; text-shadow: 0 1px 2px #000; }
+.camera-scene { bottom: 9px; left: 10px; opacity: .85; font-size: 8px; }
+.agent-response-note { margin: 8px 0 0; color: #73817b; font-size: 10px; }
