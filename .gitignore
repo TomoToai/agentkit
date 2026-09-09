@@ -19,3 +19,8 @@ node_modules/
 # ---------- 系统/编辑器 ----------
 .DS_Store
 *.log
+
+# ---------- 本地产物 / 临时文件（可由脚本重新生成，勿提交）----------
+Knowledge/dist/
+APMPlus/*.bak
+APMPlus/span-export-*.csv
