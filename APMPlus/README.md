@@ -1,10 +1,16 @@
-xxx# APMPlus · 数据回流评测集
+# APMPlus · 数据回流评测集
 
 本目录承载**方式二：数据回流（Data Reflow）**——从 AgentKit「可观测 → 数据回流」采集
 线上真实 Trace，加工成独立评测集「影腾摄像头诊断-真实回流集」。
 
 与 `eval/`（方式一：人工设计评测集）平级、互不合并；两者最终复用同一套评估器
 （事实正确性 / 工具合规 / 安全边界）跑评测实验。
+
+> 完整落地方案（含官方字段说明、字段映射、脱敏与限制）见本目录 [`数据回流方案.md`](数据回流方案.md)。
+>
+> ⚠️ **关键顺序**：官方数据回流「仅回流新数据、不支持历史数据」——导出任务只捕获
+> **任务创建之后**产生的 Trace。因此**必须先在控制台创建导出任务，再跑 `replay_traffic.py`
+> 造流量**，否则造的流量不会被导出。
 
 ## 目录文件
 
@@ -24,18 +30,23 @@ xxx# APMPlus · 数据回流评测集
 ## 运行方式
 
 ```bash
-# 1) 造流量：回放评测问题，生成真实 Trace（断点续跑、失败自动重试）
-export REPLAY_PASS='<控制台登录密码>'   # 凭据勿写进脚本
+# 1) 【先建任务】控制台 可观测 → 数据回流 → 创建导出任务
+#    数据过滤：服务名称=摄像头 Agent Runtime + AI Span 类型=Agent Run + 状态码=成功
+#    时间范围=回流新数据；导出平台=智能体评测平台；目标评测集=新增「影腾摄像头诊断-真实回流集」
+#    导入方式=追加；数据脱敏=开启；字段映射：Span.input→input、Span.output→reference_output
+#    ——务必先建任务再造流量，否则「仅回流新数据」会漏掉本次流量。
+
+# 2) 造流量：回放评测问题，生成真实 Trace（断点续跑、失败自动重试）
+set -a && source ../.env && set +a   # 载入 REPLAY_USER/REPLAY_PASS（勿硬编码）
 python3 replay_traffic.py
 
-# 2) 控制台「数据回流」按 服务=摄像头 Agent + AI Span 类型=Agent Run + 成功 导出 Trace
-
-# 3) 去噪加工：导出文件 → 干净 CSV
+# 3) 等任务导出到评测集后，可直接在控制台用该评测集发起实验；
+#    如需本地二次清洗/自测，用去噪脚本把导出文件 → 干净 CSV：
 python3 process_reflow.py -i <导出的Trace文件.jsonl>
-#   自测：直接用回放结果
+#    自测：直接用回放结果
 python3 process_reflow.py --only-success --source-tag replay
 
-# 4) 新建评测集「影腾摄像头诊断-真实回流集」导入 CSV，人工审核 reference_output
+# 4) 人工审核 reference_output（回流的是 Agent 真实回答，需修正为标准答案）
 #    + 补 category/difficulty 等自定义列 → 提交版本 → 复用三个评估器跑实验
 ```
 
