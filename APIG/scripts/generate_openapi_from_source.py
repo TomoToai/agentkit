@@ -49,6 +49,21 @@ BUSINESS_OPERATIONS: dict[tuple[str, str], dict[str, Any]] = {
                         "description": "不传则返回所有告警", "schema": {"type": "string"}}],
         "responses": {"200": {"description": "告警列表"}},
     },
+    ("GET", "/api/product-guides"): {
+        "operationId": "list_product_guides",
+        "summary": "查询产品型号使用指南目录",
+        "description": "列出全部摄像头型号（SKU）及其分类、分辨率和适用场景；用户咨询产品用法但型号不明时，用于引导确认型号。",
+        "parameters": [{"name": "search", "in": "query", "required": False,
+                        "description": "按型号、名称、分类或场景关键词过滤", "schema": {"type": "string"}}],
+        "responses": {"200": {"description": "型号目录"}},
+    },
+    ("GET", "/api/product-guides/{sku}"): {
+        "operationId": "get_product_guide",
+        "summary": "获取指定型号的使用指南",
+        "description": "按型号（SKU）返回该摄像头的完整使用指南（安装、配网、日常使用、FAQ、维护）。",
+        "parameters": [{"$ref": "#/components/parameters/Sku"}],
+        "responses": {"200": {"description": "使用指南"}, "404": {"description": "型号不存在"}},
+    },
     ("PATCH", "/api/cameras/{camera_id}/maintenance-status"): {
         "operationId": "update_camera_maintenance_status",
         "summary": "更新摄像头检修状态",
@@ -73,6 +88,7 @@ REGEX_ROUTE_TEMPLATES = {
     r"/api/cameras/(CAM-\d+)": "/api/cameras/{camera_id}",
     r"/api/cameras/(CAM-\d+)/diagnostics": "/api/cameras/{camera_id}/diagnostics",
     r"/api/cameras/(CAM-\d+)/maintenance-status": "/api/cameras/{camera_id}/maintenance-status",
+    r"/api/product-guides/([\w.-]+)": "/api/product-guides/{sku}",
 }
 
 
@@ -157,6 +173,10 @@ def build_spec(source: Path, server_url: str) -> dict[str, Any]:
                 "CameraId": {
                     "name": "camera_id", "in": "path", "required": True,
                     "schema": {"type": "string", "example": "CAM-003"},
+                },
+                "Sku": {
+                    "name": "sku", "in": "path", "required": True,
+                    "schema": {"type": "string", "example": "YT-IPC-4K"},
                 }
             }
         },
@@ -244,11 +264,11 @@ def main() -> int:
         if not args.output.exists() or args.output.read_text(encoding="utf-8") != content:
             print(f"校验失败：{args.output} 与当前源码扫描结果不一致", file=sys.stderr)
             return 1
-        print(f"校验通过：{args.output}（5 个存量业务 API）")
+        print(f"校验通过：{args.output}（{len(BUSINESS_OPERATIONS)} 个存量业务 API）")
         return 0
 
     args.output.write_text(content, encoding="utf-8")
-    print(f"已生成 {args.output}（5 个存量业务 API）")
+    print(f"已生成 {args.output}（{len(BUSINESS_OPERATIONS)} 个存量业务 API）")
     return 0
 
 

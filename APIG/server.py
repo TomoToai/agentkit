@@ -49,6 +49,54 @@ ALERTS = [
 AUDIT_LOGS: list[dict] = []
 
 
+def _resolve_knowledge_dir() -> Path:
+    """定位产品使用指南知识库目录。
+
+    知识库位于仓库根目录 ``Knowledge/``（与 APIG 同级）。优先使用环境变量
+    ``KNOWLEDGE_DIR`` 显式指定；否则依次尝试仓库根目录和 APIG 目录内，
+    兼容"源码运行"与"整目录 COPY 进镜像"两种部署形态。
+    """
+    override = os.getenv("KNOWLEDGE_DIR", "").strip()
+    if override:
+        return Path(override)
+    for candidate in (ROOT.parent / "Knowledge", ROOT / "Knowledge"):
+        if candidate.exists():
+            return candidate
+    return ROOT.parent / "Knowledge"
+
+
+KNOWLEDGE_DIR = _resolve_knowledge_dir()
+
+
+def _load_product_guides() -> tuple[dict, dict[str, str]]:
+    """启动时加载产品使用指南知识库（Knowledge/）。
+
+    返回 (catalog, guides)：catalog 为型号目录（供列表与型号消歧），
+    guides 为 ``SKU -> 指南 Markdown 全文`` 的映射。知识库缺失时降级为空，
+    不影响其余业务接口。
+    """
+    catalog_path = KNOWLEDGE_DIR / "catalog.json"
+    if not catalog_path.exists():
+        return {"total": 0, "items": []}, {}
+    try:
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return {"total": 0, "items": []}, {}
+    guides: dict[str, str] = {}
+    for item in catalog.get("items", []):
+        sku = item.get("sku")
+        guide_file = KNOWLEDGE_DIR / (item.get("guide") or "")
+        if sku and guide_file.exists():
+            try:
+                guides[sku] = guide_file.read_text(encoding="utf-8")
+            except OSError:
+                continue
+    return catalog, guides
+
+
+PRODUCT_CATALOG, PRODUCT_GUIDES = _load_product_guides()
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -264,12 +312,13 @@ def verify_session_token(token: str) -> str | None:
 
 
 def is_protected_business_api(method: str, path: str) -> bool:
-    """仅保护会被转换为 MCP 工具的五个存量业务 API。"""
+    """仅保护会被转换为 MCP 工具的存量业务 API。"""
     if method == "GET":
         return (
-            path in {"/api/cameras", "/api/alerts"}
+            path in {"/api/cameras", "/api/alerts", "/api/product-guides"}
             or bool(re.fullmatch(r"/api/cameras/CAM-\d+", path))
             or bool(re.fullmatch(r"/api/cameras/CAM-\d+/diagnostics", path))
+            or bool(re.fullmatch(r"/api/product-guides/[\w.-]+", path))
         )
     return method == "PATCH" and bool(re.fullmatch(r"/api/cameras/CAM-\d+/maintenance-status", path))
 
@@ -584,6 +633,21 @@ class Handler(BaseHTTPRequestHandler):
             payload = {"items": alerts, "total": len(alerts)}
         elif path == "/api/audit-logs":
             payload = {"items": AUDIT_LOGS[:30], "total": len(AUDIT_LOGS)}
+        elif path == "/api/product-guides":
+            items = PRODUCT_CATALOG.get("items", [])
+            if query.get("search"):
+                term = query["search"][0].lower()
+                items = [i for i in items if term in f'{i.get("sku","")} {i.get("name","")} {i.get("category","")} {i.get("scene","")}'.lower()]
+            payload = {"items": items, "total": len(items)}
+        elif (match := re.fullmatch(r"/api/product-guides/([\w.-]+)", path)):
+            sku = match.group(1)
+            guide = PRODUCT_GUIDES.get(sku)
+            meta = next((i for i in PRODUCT_CATALOG.get("items", []) if i.get("sku") == sku), None)
+            if guide and meta:
+                payload = {"sku": sku, "name": meta.get("name"), "category": meta.get("category"), "guide": guide}
+            else:
+                available = [i.get("sku") for i in PRODUCT_CATALOG.get("items", [])]
+                status, payload = 404, {"error": {"code": "guide_not_found", "message": "未找到该型号的使用指南", "available_skus": available}}
         elif (match := re.fullmatch(r"/api/cameras/(CAM-\d+)", path)):
             camera = CAMERAS.get(match.group(1))
             if camera:

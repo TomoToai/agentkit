@@ -44,6 +44,25 @@ paths:
         - {name: camera_id, in: query, required: false, schema: {type: string}, description: 不传则返回所有告警}
       responses:
         '200': {description: 告警列表}
+  /api/product-guides:
+    get:
+      operationId: list_product_guides
+      summary: 查询产品型号使用指南目录
+      description: 列出全部摄像头型号（SKU）及其分类、分辨率和适用场景；用户咨询产品用法但型号不明时，用于引导确认型号。
+      parameters:
+        - {name: search, in: query, required: false, schema: {type: string}, description: 按型号、名称、分类或场景关键词过滤}
+      responses:
+        '200': {description: 型号目录, content: {application/json: {schema: {$ref: '#/components/schemas/GuideCatalog'}}}}
+  /api/product-guides/{sku}:
+    get:
+      operationId: get_product_guide
+      summary: 获取指定型号的使用指南
+      description: 按型号（SKU）返回该摄像头的完整使用指南（安装、配网、日常使用、FAQ、维护）。
+      parameters:
+        - {$ref: '#/components/parameters/Sku'}
+      responses:
+        '200': {description: 使用指南, content: {application/json: {schema: {$ref: '#/components/schemas/ProductGuide'}}}}
+        '404': {description: 型号不存在}
   /api/cameras/{camera_id}/maintenance-status:
     patch:
       operationId: update_camera_maintenance_status
@@ -76,6 +95,11 @@ components:
       in: path
       required: true
       schema: {type: string, example: CAM-003}
+    Sku:
+      name: sku
+      in: path
+      required: true
+      schema: {type: string, example: YT-IPC-4K}
   schemas:
     Camera:
       type: object
@@ -108,3 +132,24 @@ components:
         image: {type: string}
         summary: {type: string}
         recommendations: {type: array, items: {type: string}}
+    GuideCatalogItem:
+      type: object
+      properties:
+        sku: {type: string, example: YT-IPC-4K}
+        name: {type: string}
+        category: {type: string}
+        resolution: {type: string}
+        scene: {type: string}
+        guide: {type: string}
+    GuideCatalog:
+      type: object
+      properties:
+        items: {type: array, items: {$ref: '#/components/schemas/GuideCatalogItem'}}
+        total: {type: integer}
+    ProductGuide:
+      type: object
+      properties:
+        sku: {type: string}
+        name: {type: string}
+        category: {type: string}
+        guide: {type: string, description: 使用指南的 Markdown 全文}

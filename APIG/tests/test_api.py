@@ -3,6 +3,7 @@ import os
 import threading
 import unittest
 import urllib.error
+import urllib.parse
 import urllib.request
 from http.server import ThreadingHTTPServer
 from unittest import mock
@@ -111,6 +112,45 @@ class ApiTest(unittest.TestCase):
         status, payload = self.request("/api/cameras/CAM-003/maintenance-status", "PATCH", {"status": "pending", "reason": "test"})
         self.assertEqual(status, 200)
         self.assertEqual(payload["maintenance_status"], "pending")
+
+    # ---- 产品使用指南知识库：型号目录与型号级指南检索 ----
+
+    def test_lists_product_guides(self):
+        status, payload = self.request("/api/product-guides")
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["total"], 30)
+        skus = {item["sku"] for item in payload["items"]}
+        # 必须包含现网 6 台设备使用的 3 个型号。
+        self.assertTrue({"YT-IPC-4K", "YT-DOME-2K", "YT-PTZ-4K"}.issubset(skus))
+
+    def test_searches_product_guides_by_keyword(self):
+        status, payload = self.request("/api/product-guides?search=" + urllib.parse.quote("球机"))
+        self.assertEqual(status, 200)
+        self.assertGreater(payload["total"], 0)
+        self.assertTrue(all("YT-" in item["sku"] for item in payload["items"]))
+
+    def test_gets_product_guide_by_sku(self):
+        status, payload = self.request("/api/product-guides/YT-IPC-4K")
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["sku"], "YT-IPC-4K")
+        self.assertIn("使用指南", payload["guide"])
+
+    def test_unknown_sku_returns_404_with_available_list(self):
+        status, payload = self.request("/api/product-guides/YT-NOT-EXIST")
+        self.assertEqual(status, 404)
+        self.assertEqual(payload["error"]["code"], "guide_not_found")
+        self.assertIn("YT-IPC-4K", payload["error"]["available_skus"])
+
+    def test_product_guides_require_credentials(self):
+        status, payload = self.request("/api/product-guides", api_key=None)
+        self.assertEqual(status, 401)
+        self.assertEqual(payload["error"]["code"], "login_required")
+
+    def test_product_guides_readable_via_session(self):
+        cookie = self.login()
+        status, payload = self.request("/api/product-guides/YT-DOME-2K", api_key=None, cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["sku"], "YT-DOME-2K")
 
     # ---- 浏览器侧：登录会话取代 ui=1 BFF，密钥不下发浏览器 ----
 

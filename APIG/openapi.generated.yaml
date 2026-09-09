@@ -7,7 +7,7 @@ info:
   version: "1.0.0"
   description: "由 server.py 路由扫描生成；仅包含可安全转换为 MCP 工具的存量业务 API。"
 servers:
-  - url: "https://scnmblp2s7ph3h8mvvspf.apigateway-cn-beijing.volceapi.com"
+  - url: "http://host.docker.internal:8000"
 security:
   - ApiKeyAuth: []
 paths:
@@ -71,6 +71,33 @@ paths:
       responses:
         "200":
           description: "告警列表"
+  /api/product-guides:
+    get:
+      operationId: "list_product_guides"
+      summary: "查询产品型号使用指南目录"
+      description: "列出全部摄像头型号（SKU）及其分类、分辨率和适用场景；用户咨询产品用法但型号不明时，用于引导确认型号。"
+      parameters:
+        - name: "search"
+          in: "query"
+          required: false
+          description: "按型号、名称、分类或场景关键词过滤"
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "型号目录"
+  /api/product-guides/{sku}:
+    get:
+      operationId: "get_product_guide"
+      summary: "获取指定型号的使用指南"
+      description: "按型号（SKU）返回该摄像头的完整使用指南（安装、配网、日常使用、FAQ、维护）。"
+      parameters:
+        - $ref: "#/components/parameters/Sku"
+      responses:
+        "200":
+          description: "使用指南"
+        "404":
+          description: "型号不存在"
   /api/cameras/{camera_id}/maintenance-status:
     patch:
       operationId: "update_camera_maintenance_status"
@@ -116,3 +143,10 @@ components:
       schema:
         type: "string"
         example: "CAM-003"
+    Sku:
+      name: "sku"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
+        example: "YT-IPC-4K"

@@ -1,0 +1,247 @@
+{
+  "product_line": "影腾（YingTeng）监控摄像头",
+  "total": 30,
+  "note": "本目录为演示知识库，型号与参数为影腾 demo 虚构数据，仅用于产品使用指南检索。",
+  "items": [
+    {
+      "sku": "YT-IPC-4K",
+      "name": "星光级 4K 枪机",
+      "category": "枪机（Bullet）",
+      "resolution": "4K (3840×2160)",
+      "scene": "园区周界、道路、出入口等需要远距离定向监控的室外场景。",
+      "guide": "guides/YT-IPC-4K.md"
+    },
+    {
+      "sku": "YT-DOME-2K",
+      "name": "室内半球 2K",
+      "category": "半球（Dome）",
+      "resolution": "2K (2560×1440)",
+      "scene": "大厅、走廊、电梯厅、仓库通道等室内近距离场景。",
+      "guide": "guides/YT-DOME-2K.md"
+    },
+    {
+      "sku": "YT-PTZ-4K",
+      "name": "室外高速球机 4K",
+      "category": "球机（PTZ）",
+      "resolution": "4K (3840×2160)",
+      "scene": "停车场、广场、港口等需要大范围巡航与变焦追踪的场景。",
+      "guide": "guides/YT-PTZ-4K.md"
+    },
+    {
+      "sku": "YT-IPC-2K",
+      "name": "红外 2K 枪机",
+      "category": "枪机（Bullet）",
+      "resolution": "2K (2560×1440)",
+      "scene": "园区周界、道路、出入口等需要远距离定向监控的室外场景。",
+      "guide": "guides/YT-IPC-2K.md"
+    },
+    {
+      "sku": "YT-IPC-8K",
+      "name": "超高清 8K 枪机",
+      "category": "枪机（Bullet）",
+      "resolution": "8K (7680×4320)",
+      "scene": "园区周界、道路、出入口等需要远距离定向监控的室外场景。",
+      "guide": "guides/YT-IPC-8K.md"
+    },
+    {
+      "sku": "YT-IPC-PRO",
+      "name": "AI 全彩枪机 Pro",
+      "category": "枪机（Bullet）",
+      "resolution": "4K (3840×2160)",
+      "scene": "园区周界、道路、出入口等需要远距离定向监控的室外场景。",
+      "guide": "guides/YT-IPC-PRO.md"
+    },
+    {
+      "sku": "YT-IPC-LITE",
+      "name": "经济型高清枪机",
+      "category": "枪机（Bullet）",
+      "resolution": "1080P (1920×1080)",
+      "scene": "园区周界、道路、出入口等需要远距离定向监控的室外场景。",
+      "guide": "guides/YT-IPC-LITE.md"
+    },
+    {
+      "sku": "YT-IPC-LPR",
+      "name": "车牌识别枪机",
+      "category": "枪机（Bullet）",
+      "resolution": "4K (3840×2160)",
+      "scene": "园区周界、道路、出入口等需要远距离定向监控的室外场景。",
+      "guide": "guides/YT-IPC-LPR.md"
+    },
+    {
+      "sku": "YT-DOME-4K",
+      "name": "室内半球 4K",
+      "category": "半球（Dome）",
+      "resolution": "4K (3840×2160)",
+      "scene": "大厅、走廊、电梯厅、仓库通道等室内近距离场景。",
+      "guide": "guides/YT-DOME-4K.md"
+    },
+    {
+      "sku": "YT-DOME-AI",
+      "name": "AI 人形半球",
+      "category": "半球（Dome）",
+      "resolution": "4K (3840×2160)",
+      "scene": "大厅、走廊、电梯厅、仓库通道等室内近距离场景。",
+      "guide": "guides/YT-DOME-AI.md"
+    },
+    {
+      "sku": "YT-DOME-VF",
+      "name": "变焦半球",
+      "category": "半球（Dome）",
+      "resolution": "2K (2560×1440)",
+      "scene": "大厅、走廊、电梯厅、仓库通道等室内近距离场景。",
+      "guide": "guides/YT-DOME-VF.md"
+    },
+    {
+      "sku": "YT-DOME-MINI",
+      "name": "迷你隐蔽半球",
+      "category": "半球（Dome）",
+      "resolution": "1080P (1920×1080)",
+      "scene": "大厅、走廊、电梯厅、仓库通道等室内近距离场景。",
+      "guide": "guides/YT-DOME-MINI.md"
+    },
+    {
+      "sku": "YT-PTZ-2K",
+      "name": "室外球机 2K",
+      "category": "球机（PTZ）",
+      "resolution": "2K (2560×1440)",
+      "scene": "停车场、广场、港口等需要大范围巡航与变焦追踪的场景。",
+      "guide": "guides/YT-PTZ-2K.md"
+    },
+    {
+      "sku": "YT-PTZ-AI",
+      "name": "AI 自动追踪球机",
+      "category": "球机（PTZ）",
+      "resolution": "4K (3840×2160)",
+      "scene": "停车场、广场、港口等需要大范围巡航与变焦追踪的场景。",
+      "guide": "guides/YT-PTZ-AI.md"
+    },
+    {
+      "sku": "YT-PTZ-MINI",
+      "name": "迷你云台球机",
+      "category": "球机（PTZ）",
+      "resolution": "2K (2560×1440)",
+      "scene": "停车场、广场、港口等需要大范围巡航与变焦追踪的场景。",
+      "guide": "guides/YT-PTZ-MINI.md"
+    },
+    {
+      "sku": "YT-PTZ-LASER",
+      "name": "激光夜视球机",
+      "category": "球机（PTZ）",
+      "resolution": "4K (3840×2160)",
+      "scene": "停车场、广场、港口等需要大范围巡航与变焦追踪的场景。",
+      "guide": "guides/YT-PTZ-LASER.md"
+    },
+    {
+      "sku": "YT-FISH-6M",
+      "name": "600 万鱼眼全景",
+      "category": "鱼眼全景（Fisheye）",
+      "resolution": "6MP (3072×2048)",
+      "scene": "开放式办公区、零售卖场、会议室的无盲区俯拍。",
+      "guide": "guides/YT-FISH-6M.md"
+    },
+    {
+      "sku": "YT-FISH-12M",
+      "name": "1200 万鱼眼全景",
+      "category": "鱼眼全景（Fisheye）",
+      "resolution": "12MP (4000×3000)",
+      "scene": "开放式办公区、零售卖场、会议室的无盲区俯拍。",
+      "guide": "guides/YT-FISH-12M.md"
+    },
+    {
+      "sku": "YT-PANO-180",
+      "name": "180° 双目全景机",
+      "category": "鱼眼全景（Fisheye）",
+      "resolution": "8MP (双目 2×4MP)",
+      "scene": "开放式办公区、零售卖场、会议室的无盲区俯拍。",
+      "guide": "guides/YT-PANO-180.md"
+    },
+    {
+      "sku": "YT-HOME-2K",
+      "name": "家用云台机 2K",
+      "category": "家用/商用云台机（Home）",
+      "resolution": "2K (2560×1440)",
+      "scene": "家庭、小微门店、前台等即插即用的轻量看护场景。",
+      "guide": "guides/YT-HOME-2K.md"
+    },
+    {
+      "sku": "YT-HOME-3K",
+      "name": "家用云台机 3K",
+      "category": "家用/商用云台机（Home）",
+      "resolution": "3K (2880×1620)",
+      "scene": "家庭、小微门店、前台等即插即用的轻量看护场景。",
+      "guide": "guides/YT-HOME-3K.md"
+    },
+    {
+      "sku": "YT-HOME-BAT",
+      "name": "低功耗电池机",
+      "category": "家用/商用云台机（Home）",
+      "resolution": "2K (2560×1440)",
+      "scene": "家庭、小微门店、前台等即插即用的轻量看护场景。",
+      "guide": "guides/YT-HOME-BAT.md"
+    },
+    {
+      "sku": "YT-DOORBELL",
+      "name": "智能可视门铃",
+      "category": "家用/商用云台机（Home）",
+      "resolution": "2K (1600×1200)",
+      "scene": "家庭、小微门店、前台等即插即用的轻量看护场景。",
+      "guide": "guides/YT-DOORBELL.md"
+    },
+    {
+      "sku": "YT-THERMAL-B",
+      "name": "双光谱测温枪机",
+      "category": "热成像（Thermal）",
+      "resolution": "可见光 4K + 热成像 384×288",
+      "scene": "森林防火、变电站测温、周界防入侵等需要温度感知的场景。",
+      "guide": "guides/YT-THERMAL-B.md"
+    },
+    {
+      "sku": "YT-THERMAL-P",
+      "name": "热成像云台机",
+      "category": "热成像（Thermal）",
+      "resolution": "可见光 2K + 热成像 640×512",
+      "scene": "森林防火、变电站测温、周界防入侵等需要温度感知的场景。",
+      "guide": "guides/YT-THERMAL-P.md"
+    },
+    {
+      "sku": "YT-EX-BULLET",
+      "name": "防爆枪机",
+      "category": "防爆（Explosion-proof）",
+      "resolution": "4K (3840×2160)",
+      "scene": "石化、油库、加油站、粉尘车间等易燃易爆危险区域。",
+      "guide": "guides/YT-EX-BULLET.md"
+    },
+    {
+      "sku": "YT-EX-PTZ",
+      "name": "防爆球机",
+      "category": "防爆（Explosion-proof）",
+      "resolution": "4K (3840×2160)",
+      "scene": "石化、油库、加油站、粉尘车间等易燃易爆危险区域。",
+      "guide": "guides/YT-EX-PTZ.md"
+    },
+    {
+      "sku": "YT-SOLAR-4G",
+      "name": "太阳能 4G 球机",
+      "category": "太阳能 4G（Solar/4G）",
+      "resolution": "2K (2560×1440)",
+      "scene": "工地、农田、鱼塘、边远无网无电点位的独立布控。",
+      "guide": "guides/YT-SOLAR-4G.md"
+    },
+    {
+      "sku": "YT-SOLAR-BULLET",
+      "name": "太阳能 4G 枪机",
+      "category": "太阳能 4G（Solar/4G）",
+      "resolution": "2K (2560×1440)",
+      "scene": "工地、农田、鱼塘、边远无网无电点位的独立布控。",
+      "guide": "guides/YT-SOLAR-BULLET.md"
+    },
+    {
+      "sku": "YT-4G-MINI",
+      "name": "4G 便携布控球",
+      "category": "太阳能 4G（Solar/4G）",
+      "resolution": "2K (2560×1440)",
+      "scene": "工地、农田、鱼塘、边远无网无电点位的独立布控。",
+      "guide": "guides/YT-4G-MINI.md"
+    }
+  ]
+}

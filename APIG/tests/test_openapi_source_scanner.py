@@ -20,6 +20,8 @@ class OpenApiSourceScannerTest(unittest.TestCase):
             "/api/cameras/{camera_id}",
             "/api/cameras/{camera_id}/diagnostics",
             "/api/alerts",
+            "/api/product-guides",
+            "/api/product-guides/{sku}",
             "/api/cameras/{camera_id}/maintenance-status",
         })
         self.assertNotIn("/api/agent/chat", spec["paths"])
@@ -27,6 +29,8 @@ class OpenApiSourceScannerTest(unittest.TestCase):
         self.assertEqual(spec["components"]["securitySchemes"]["ApiKeyAuth"]["name"], "X-API-Key")
         rendered = render_yaml(spec)
         self.assertIn("update_camera_maintenance_status", rendered)
+        self.assertIn("list_product_guides", rendered)
+        self.assertIn("get_product_guide", rendered)
         self.assertIn("X-API-Key", rendered)
         self.assertIn("ApiKeyAuth: []", rendered)
         self.assertIn('"200":', rendered)
